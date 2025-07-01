@@ -300,38 +300,11 @@
             useEffect(() => {
                 console.log('🔄 Initializing DevInspector...');
                 
-                const newInspector = new DevInspector({
-                    enabled: true,
-                    position: position,
-                    theme: 'auto',
-                    hotkeys: {
-                        toggle: 'ctrl+shift+d',
-                        minimize: 'ctrl+shift+m'
-                    },
-                    features: {
-                        network: true,
-                        console: true,
-                        performance: true,
-                        errors: true,
-                        state: true,
-                        dom: true,
-                        storage: true
-                    },
-                    maxNetworkEntries: 150,
-                    maxConsoleEntries: 300,
-                    captureStackTraces: true,
-                    onError: (error) => {
-                        console.error('DevInspector Error:', error);
-                    },
-                    onPerformanceIssue: (issue) => {
-                        console.warn('Performance Issue:', issue);
-                    }
-                });
-
+                const newInspector = new DevInspector();
                 newInspector.show();
                 setInspector(newInspector);
 
-                console.log(`🎯 DevInspector initialized with ${position} layout`);
+                console.log(`🎯 DevInspector initialized with enhanced UI`);
 
                 return () => {
                     if (newInspector) {
@@ -339,7 +312,7 @@
                         console.log('🧹 DevInspector cleaned up');
                     }
                 };
-            }, [position]);
+            }, []);
 
             const changeLayout = useCallback((newPosition) => {
                 setPosition(newPosition);
@@ -729,28 +702,28 @@
             );
         }
 
-        // Layout Controls Component
-        function LayoutControls({ onLayoutChange, currentPosition }) {
-            const layouts = [
-                { key: 'bottom-right', label: '📍 Bottom Right' },
-                { key: 'bottom-sidebar', label: '📊 Bottom Sidebar' },
-                { key: 'fullwidth', label: '📏 Full Width' },
-                { key: 'top-left', label: '↖️ Top Left' },
-                { key: 'top-right', label: '↗️ Top Right' },
-                { key: 'bottom-left', label: '↙️ Bottom Left' }
+        // DevInspector Controls Component
+        function DevInspectorControls({ inspector }) {
+            const controls = [
+                { key: 'toggle', label: '🔍 Toggle', action: () => inspector?.toggle() },
+                { key: 'minimize', label: '📏 Minimize', action: () => inspector?.minimize() },
+                { key: 'clear-network', label: '🗑️ Clear Network', action: () => inspector?.clear('network') },
+                { key: 'clear-console', label: '🧹 Clear Console', action: () => inspector?.clear('console') },
+                { key: 'clear-errors', label: '❌ Clear Errors', action: () => inspector?.clear('errors') },
+                { key: 'toggle-recording', label: '⏸️ Toggle Recording', action: () => inspector?.toggleRecording() }
             ];
 
             return (
                 <div className="controls-panel">
                     <h3>🎛️ DevInspector Controls</h3>
                     <div className="layout-grid">
-                        {layouts.map(layout => (
+                        {controls.map(control => (
                             <button
-                                key={layout.key}
-                                className={`layout-btn ${currentPosition === layout.key ? 'active' : ''}`}
-                                onClick={() => onLayoutChange(layout.key)}
+                                key={control.key}
+                                className="layout-btn"
+                                onClick={control.action}
                             >
-                                {layout.label}
+                                {control.label}
                             </button>
                         ))}
                     </div>
@@ -762,9 +735,9 @@
                         fontSize: '12px',
                         textAlign: 'center'
                     }}>
-                        <strong>Keyboard Shortcuts:</strong><br/>
-                        Ctrl+Shift+D - Toggle<br/>
-                        Ctrl+Shift+M - Minimize
+                        <strong>Enhanced DevInspector:</strong><br/>
+                        Auto-initializes with modern UI<br/>
+                        Click floating button to open
                     </div>
                 </div>
             );
@@ -772,7 +745,7 @@
 
         // Main App Component
         function App() {
-            const { inspector, changeLayout, currentPosition } = useDevInspector();
+            const { inspector } = useDevInspector();
             const [componentErrors, setComponentErrors] = useState([]);
 
             // Error boundary simulation
@@ -811,10 +784,7 @@
 
             return (
                 <div className="app-container">
-                    <LayoutControls 
-                        onLayoutChange={changeLayout} 
-                        currentPosition={currentPosition} 
-                    />
+                    <DevInspectorControls inspector={inspector} />
                     
                     <div className="header">
                         <div className="react-logo">⚛️</div>

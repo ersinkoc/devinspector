@@ -510,36 +510,10 @@
 
                 console.log('🅰️ Initializing DevInspector with Angular...');
                 
-                this.inspector = new DevInspector({
-                    enabled: true,
-                    position: position,
-                    theme: 'auto',
-                    hotkeys: {
-                        toggle: 'ctrl+shift+d',
-                        minimize: 'ctrl+shift+m'
-                    },
-                    features: {
-                        network: true,
-                        console: true,
-                        performance: true,
-                        errors: true,
-                        state: true,
-                        dom: true,
-                        storage: true
-                    },
-                    maxNetworkEntries: 200,
-                    maxConsoleEntries: 400,
-                    captureStackTraces: true,
-                    onError: (error) => {
-                        console.error('DevInspector Error:', error);
-                    },
-                    onPerformanceIssue: (issue) => {
-                        console.warn('Performance Issue:', issue);
-                    }
-                });
+                this.inspector = new DevInspector();
 
                 this.inspector.show();
-                console.log(`🎯 DevInspector initialized with ${position} layout`);
+                console.log(`🎯 DevInspector initialized with enhanced UI`);
             }
 
             setLayout(layout) {

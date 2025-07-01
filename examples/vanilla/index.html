@@ -410,17 +410,17 @@
         <div class="controls-panel">
             <h3>🎛️ DevInspector Controls</h3>
             <div class="layout-grid">
-                <button class="layout-btn active" onclick="setLayout('bottom-right')">📍 Bottom Right</button>
-                <button class="layout-btn" onclick="setLayout('bottom-sidebar')">📊 Bottom Sidebar</button>
-                <button class="layout-btn" onclick="setLayout('fullwidth')">📏 Full Width</button>
-                <button class="layout-btn" onclick="setLayout('top-left')">↖️ Top Left</button>
-                <button class="layout-btn" onclick="setLayout('top-right')">↗️ Top Right</button>
-                <button class="layout-btn" onclick="setLayout('bottom-left')">↙️ Bottom Left</button>
+                <button class="layout-btn" onclick="app.inspector?.toggle()">🔍 Toggle Inspector</button>
+                <button class="layout-btn" onclick="app.inspector?.minimize()">📏 Minimize</button>
+                <button class="layout-btn" onclick="app.inspector?.clear('network')">🗑️ Clear Network</button>
+                <button class="layout-btn" onclick="app.inspector?.clear('console')">🧹 Clear Console</button>
+                <button class="layout-btn" onclick="app.inspector?.clear('errors')">❌ Clear Errors</button>
+                <button class="layout-btn" onclick="app.inspector?.toggleRecording()">⏸️ Toggle Recording</button>
             </div>
             <div style="margin-top: 15px; padding: 10px; background: rgba(243, 156, 18, 0.1); border-radius: 8px; font-size: 12px; text-align: center;">
-                <strong>Keyboard Shortcuts:</strong><br/>
-                Ctrl+Shift+D - Toggle<br/>
-                Ctrl+Shift+M - Minimize
+                <strong>Enhanced DevInspector:</strong><br/>
+                Auto-initializes with modern UI<br/>
+                Click floating button to open
             </div>
         </div>
         
@@ -644,42 +644,11 @@
 
                 console.log('🟨 Initializing DevInspector with Vanilla JavaScript...');
                 
-                this.inspector = new DevInspector({
-                    enabled: true,
-                    position: position,
-                    theme: 'auto',
-                    hotkeys: {
-                        toggle: 'ctrl+shift+d',
-                        minimize: 'ctrl+shift+m'
-                    },
-                    features: {
-                        network: true,
-                        console: true,
-                        performance: true,
-                        errors: true,
-                        state: true,
-                        dom: true,
-                        storage: true
-                    },
-                    maxNetworkEntries: 200,
-                    maxConsoleEntries: 500,
-                    captureStackTraces: true,
-                    onError: (error) => {
-                        console.error('DevInspector Error:', error);
-                    },
-                    onPerformanceIssue: (issue) => {
-                        console.warn('Performance Issue:', issue);
-                    }
-                });
-
+                this.inspector = new DevInspector();
                 this.inspector.show();
-                console.log(`🎯 DevInspector initialized with ${position} layout`);
+                console.log(`🎯 DevInspector initialized with enhanced UI`);
             }
 
-            setLayout(layout) {
-                this.currentLayout = layout;
-                this.initializeInspector(layout);
-            }
 
             setupEventListeners() {
                 // Canvas click interactions
@@ -910,13 +879,6 @@
         });
 
         // Global functions for HTML event handlers
-        function setLayout(layout) {
-            app.setLayout(layout);
-            
-            // Update active button
-            document.querySelectorAll('.layout-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-        }
 
         function performOperation(operation) {
             app.performOperation(operation);

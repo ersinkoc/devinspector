@@ -197,11 +197,7 @@
       <code style="font-size: 11px; display: block; white-space: pre-wrap;">
 import DevInspector from '@oxog/devinspector';
 
-const inspector = new DevInspector({
-  enabled: true,
-  theme: 'dark'
-});
-
+const inspector = new DevInspector();
 inspector.show();</code>
     </div>
 
@@ -236,32 +232,22 @@ inspector.show();</code>
   
   <script>
     // Initialize DevInspector
-    const inspector = new DevInspector.default({
-      enabled: true,
-      position: 'bottom-right',
-      theme: 'dark'
-    });
+    const inspector = new DevInspector.default();
 
     // Show inspector after a delay
     setTimeout(() => {
       inspector.show();
-      console.log('🎉 DevInspector v1.0.0 is production ready!');
-      console.log('Features: Network monitoring, Console enhancement, Performance tracking, Error handling');
-      console.log('Bundle size: Only 2.0KB gzipped | Zero dependencies | Framework agnostic');
+      console.log('🎉 DevInspector v1.2.0 is production ready!');
+      console.log('Features: Enhanced UI, Network monitoring, Console enhancement, Performance tracking, Error handling');
+      console.log('Bundle size: Only 2.5KB gzipped | Zero dependencies | Framework agnostic');
     }, 1500);
 
-    // Demonstrate tracking
-    inspector.track('page-load', {
+    // Demo various types of console output
+    console.log('Production demo loaded:', {
       url: window.location.href,
       timestamp: Date.now(),
       userAgent: navigator.userAgent
     });
-
-    // Demonstrate performance marking
-    inspector.markStart('demo-operation');
-    setTimeout(() => {
-      inspector.markEnd('demo-operation');
-    }, 1000);
 
     // Add some demo console logs
     setTimeout(() => {

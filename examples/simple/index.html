@@ -190,16 +190,16 @@
             <p>Test different features and layouts below!</p>
         </div>
 
-        <!-- Inspector Layout Controls -->
+        <!-- Inspector Controls -->
         <div class="inspector-controls">
-            <h3>📐 Layout Options</h3>
+            <h3>🎛️ DevInspector Controls</h3>
             <div class="layout-options">
-                <button class="layout-btn active" onclick="setLayout('bottom-right')">📍 Bottom Right</button>
-                <button class="layout-btn" onclick="setLayout('bottom-sidebar')">📊 Bottom Sidebar</button>
-                <button class="layout-btn" onclick="setLayout('fullwidth')">📏 Full Width</button>
-                <button class="layout-btn" onclick="setLayout('top-left')">↖️ Top Left</button>
-                <button class="layout-btn" onclick="setLayout('top-right')">↗️ Top Right</button>
-                <button class="layout-btn" onclick="setLayout('bottom-left')">↙️ Bottom Left</button>
+                <button class="layout-btn" onclick="toggleInspector()">🔍 Toggle Inspector</button>
+                <button class="layout-btn" onclick="minimizeInspector()">📏 Minimize</button>
+                <button class="layout-btn" onclick="clearNetwork()">🗑️ Clear Network</button>
+                <button class="layout-btn" onclick="clearConsole()">🧹 Clear Console</button>
+                <button class="layout-btn" onclick="clearErrors()">❌ Clear Errors</button>
+                <button class="layout-btn" onclick="toggleRecording()">⏸️ Toggle Recording</button>
             </div>
         </div>
 
@@ -309,57 +309,56 @@
                 currentInspector.destroy();
             }
 
-            // Create new inspector with specified position
-            currentInspector = new DevInspector({
-                enabled: true,
-                position: position,
-                theme: 'auto',
-                hotkeys: {
-                    toggle: 'ctrl+shift+d',
-                    minimize: 'ctrl+shift+m'
-                },
-                features: {
-                    network: true,
-                    console: true,
-                    performance: true,
-                    errors: true,
-                    state: true,
-                    dom: true,
-                    storage: true
-                },
-                maxNetworkEntries: 100,
-                maxConsoleEntries: 200,
-                captureStackTraces: true,
-                networkFilters: {
-                    hideAssets: false,
-                    hideCached: false
-                },
-                onError: (error) => {
-                    console.error('DevInspector Error:', error);
-                },
-                onPerformanceIssue: (issue) => {
-                    console.warn('Performance Issue:', issue);
-                }
-            });
+            // Create new inspector (auto-initializes with enhanced UI)
+            currentInspector = new DevInspector();
 
             // Show the inspector
             currentInspector.show();
 
             // Log initialization
-            console.log(`🔍 DevInspector initialized with ${position} layout`);
+            console.log(`🔍 DevInspector initialized with enhanced UI`);
         }
 
-        function setLayout(layout) {
-            currentLayout = layout;
-            
-            // Update active button
-            document.querySelectorAll('.layout-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
+        function toggleInspector() {
+            if (currentInspector) {
+                currentInspector.toggle();
+                console.log('🔍 DevInspector toggled');
+            }
+        }
 
-            // Reinitialize inspector with new layout
-            initializeInspector(layout);
+        function minimizeInspector() {
+            if (currentInspector) {
+                currentInspector.minimize();
+                console.log('📏 DevInspector minimized/maximized');
+            }
+        }
+
+        function clearNetwork() {
+            if (currentInspector) {
+                currentInspector.clear('network');
+                console.log('🗑️ Network data cleared');
+            }
+        }
+
+        function clearConsole() {
+            if (currentInspector) {
+                currentInspector.clear('console');
+                console.log('🧹 Console data cleared');
+            }
+        }
+
+        function clearErrors() {
+            if (currentInspector) {
+                currentInspector.clear('errors');
+                console.log('❌ Error data cleared');
+            }
+        }
+
+        function toggleRecording() {
+            if (currentInspector) {
+                currentInspector.toggleRecording();
+                console.log('⏸️ Recording toggled');
+            }
         }
 
         // Network Requests Demo Functions
@@ -375,12 +374,6 @@
                 const response = await fetch(urls[type]);
                 const data = await response.json();
                 console.log(`✅ ${type} fetched:`, data);
-                
-                // Track custom metrics
-                currentInspector?.track(`fetch-${type}`, { 
-                    count: data.length,
-                    size: JSON.stringify(data).length 
-                });
             } catch (error) {
                 console.error(`❌ Error fetching ${type}:`, error);
             }
@@ -499,7 +492,6 @@
 
         function heavyComputation() {
             console.log('⚙️ Starting CPU intensive task...');
-            currentInspector?.markStart('heavy-computation');
             
             const start = performance.now();
             let result = 0;
@@ -508,7 +500,6 @@
             }
             const end = performance.now();
             
-            currentInspector?.markEnd('heavy-computation');
             console.log(`🏁 Computation completed in ${(end - start).toFixed(2)}ms`);
             console.log(`📊 Result: ${result.toFixed(2)}`);
         }

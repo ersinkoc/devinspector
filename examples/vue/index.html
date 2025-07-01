@@ -336,36 +336,9 @@
 
                 console.log('🔄 Initializing DevInspector with Vue...');
                 
-                inspector.value = new DevInspector({
-                    enabled: true,
-                    position: position,
-                    theme: 'auto',
-                    hotkeys: {
-                        toggle: 'ctrl+shift+d',
-                        minimize: 'ctrl+shift+m'
-                    },
-                    features: {
-                        network: true,
-                        console: true,
-                        performance: true,
-                        errors: true,
-                        state: true,
-                        dom: true,
-                        storage: true
-                    },
-                    maxNetworkEntries: 150,
-                    maxConsoleEntries: 300,
-                    captureStackTraces: true,
-                    onError: (error) => {
-                        console.error('DevInspector Error:', error);
-                    },
-                    onPerformanceIssue: (issue) => {
-                        console.warn('Performance Issue:', issue);
-                    }
-                });
-
+                inspector.value = new DevInspector();
                 inspector.value.show();
-                console.log(`🎯 DevInspector initialized with ${position} layout`);
+                console.log(`🎯 DevInspector initialized with enhanced UI`);
             };
 
             const changeLayout = (newPosition) => {
