@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevInspector - Simple Demo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin: 10px 0;
+        }
+        
+        .demo-section {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .demo-section h2 {
+            margin-top: 0;
+            color: #ffd700;
+        }
+        
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #2196F3;
+            color: white;
+        }
+        
+        .btn-warning {
+            background: #FF9800;
+            color: white;
+        }
+        
+        .btn-danger {
+            background: #F44336;
+            color: white;
+        }
+        
+        .btn-info {
+            background: #9C27B0;
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .inspector-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+        }
+        
+        .inspector-controls h3 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            color: #ffd700;
+        }
+        
+        .layout-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .layout-btn {
+            padding: 8px 12px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+        
+        .layout-btn:hover {
+            background: #555;
+        }
+        
+        .layout-btn.active {
+            background: #4CAF50;
+        }
+        
+        .log-output {
+            background: rgba(0,0,0,0.5);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin: 15px 0;
+        }
+        
+        .performance-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .metric {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .metric-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 DevInspector Demo</h1>
+            <p>Professional Developer Inspector Tool for Real-time Debugging</p>
+            <p>Test different features and layouts below!</p>
+        </div>
+
+        <!-- Inspector Layout Controls -->
+        <div class="inspector-controls">
+            <h3>📐 Layout Options</h3>
+            <div class="layout-options">
+                <button class="layout-btn active" onclick="setLayout('bottom-right')">📍 Bottom Right</button>
+                <button class="layout-btn" onclick="setLayout('bottom-sidebar')">📊 Bottom Sidebar</button>
+                <button class="layout-btn" onclick="setLayout('fullwidth')">📏 Full Width</button>
+                <button class="layout-btn" onclick="setLayout('top-left')">↖️ Top Left</button>
+                <button class="layout-btn" onclick="setLayout('top-right')">↗️ Top Right</button>
+                <button class="layout-btn" onclick="setLayout('bottom-left')">↙️ Bottom Left</button>
+            </div>
+        </div>
+
+        <!-- Network Requests Demo -->
+        <div class="demo-section">
+            <h2>🌐 Network Monitoring</h2>
+            <p>Watch network requests in real-time as you interact with these buttons:</p>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="fetchData('users')">👥 Fetch Users</button>
+                <button class="btn btn-secondary" onclick="fetchData('posts')">📝 Fetch Posts</button>
+                <button class="btn btn-info" onclick="fetchData('photos')">📷 Fetch Photos</button>
+                <button class="btn btn-warning" onclick="sendData()">📤 POST Data</button>
+                <button class="btn btn-danger" onclick="simulateError()">❌ Simulate Error</button>
+            </div>
+        </div>
+
+        <!-- Console Output Demo -->
+        <div class="demo-section">
+            <h2>📝 Console Enhancement</h2>
+            <p>Generate different types of console outputs:</p>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="logInfo()">ℹ️ Info Log</button>
+                <button class="btn btn-warning" onclick="logWarning()">⚠️ Warning</button>
+                <button class="btn btn-danger" onclick="logError()">🚨 Error</button>
+                <button class="btn btn-secondary" onclick="logObject()">📦 Complex Object</button>
+                <button class="btn btn-info" onclick="groupedLogs()">📂 Grouped Logs</button>
+            </div>
+        </div>
+
+        <!-- Performance Testing -->
+        <div class="demo-section">
+            <h2>⚡ Performance Monitoring</h2>
+            <p>Test performance monitoring features:</p>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="memoryTest()">🧠 Memory Test</button>
+                <button class="btn btn-secondary" onclick="heavyComputation()">⚙️ CPU Intensive</button>
+                <button class="btn btn-warning" onclick="animationTest()">🎬 Animation Test</button>
+                <button class="btn btn-info" onclick="domManipulation()">🔧 DOM Operations</button>
+            </div>
+            
+            <div class="performance-metrics">
+                <div class="metric">
+                    <div class="metric-value" id="fps-counter">60</div>
+                    <div class="metric-label">FPS</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value" id="memory-usage">0</div>
+                    <div class="metric-label">Memory (MB)</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value" id="dom-nodes">0</div>
+                    <div class="metric-label">DOM Nodes</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Simulation -->
+        <div class="demo-section">
+            <h2>🐛 Error Tracking</h2>
+            <p>Test error tracking and debugging features:</p>
+            <div class="button-group">
+                <button class="btn btn-danger" onclick="throwError()">💥 Throw Error</button>
+                <button class="btn btn-warning" onclick="promiseRejection()">🔴 Promise Rejection</button>
+                <button class="btn btn-secondary" onclick="typeError()">🔤 Type Error</button>
+                <button class="btn btn-info" onclick="referenceError()">🔗 Reference Error</button>
+            </div>
+        </div>
+
+        <!-- Storage Demo -->
+        <div class="demo-section">
+            <h2>💾 Storage Monitoring</h2>
+            <p>Monitor localStorage, sessionStorage, and cookies:</p>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="setLocalStorage()">💾 Set LocalStorage</button>
+                <button class="btn btn-secondary" onclick="setSessionStorage()">🔄 Set SessionStorage</button>
+                <button class="btn btn-info" onclick="setCookie()">🍪 Set Cookie</button>
+                <button class="btn btn-warning" onclick="clearStorage()">🗑️ Clear All</button>
+            </div>
+        </div>
+
+        <!-- Real-time Data -->
+        <div class="demo-section">
+            <h2>🔴 Real-time Updates</h2>
+            <p>Watch live data updates and WebSocket connections:</p>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="startRealTimeUpdates()">▶️ Start Updates</button>
+                <button class="btn btn-danger" onclick="stopRealTimeUpdates()">⏹️ Stop Updates</button>
+                <button class="btn btn-info" onclick="websocketTest()">🔌 WebSocket Test</button>
+            </div>
+            <div class="log-output" id="realtime-log">
+                <div>🟢 Ready for real-time updates...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DevInspector Script -->
+    <script src="../../dist/devinspector.umd.min.js"></script>
+    <script>
+        // Initialize DevInspector with enhanced configuration
+        let currentInspector = null;
+        let realtimeInterval = null;
+        let currentLayout = 'bottom-right';
+
+        function initializeInspector(position = 'bottom-right') {
+            // Destroy existing inspector if any
+            if (currentInspector) {
+                currentInspector.destroy();
+            }
+
+            // Create new inspector with specified position
+            currentInspector = new DevInspector({
+                enabled: true,
+                position: position,
+                theme: 'auto',
+                hotkeys: {
+                    toggle: 'ctrl+shift+d',
+                    minimize: 'ctrl+shift+m'
+                },
+                features: {
+                    network: true,
+                    console: true,
+                    performance: true,
+                    errors: true,
+                    state: true,
+                    dom: true,
+                    storage: true
+                },
+                maxNetworkEntries: 100,
+                maxConsoleEntries: 200,
+                captureStackTraces: true,
+                networkFilters: {
+                    hideAssets: false,
+                    hideCached: false
+                },
+                onError: (error) => {
+                    console.error('DevInspector Error:', error);
+                },
+                onPerformanceIssue: (issue) => {
+                    console.warn('Performance Issue:', issue);
+                }
+            });
+
+            // Show the inspector
+            currentInspector.show();
+
+            // Log initialization
+            console.log(`🔍 DevInspector initialized with ${position} layout`);
+        }
+
+        function setLayout(layout) {
+            currentLayout = layout;
+            
+            // Update active button
+            document.querySelectorAll('.layout-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Reinitialize inspector with new layout
+            initializeInspector(layout);
+        }
+
+        // Network Requests Demo Functions
+        async function fetchData(type) {
+            const urls = {
+                users: 'https://jsonplaceholder.typicode.com/users',
+                posts: 'https://jsonplaceholder.typicode.com/posts?_limit=10',
+                photos: 'https://jsonplaceholder.typicode.com/photos?_limit=5'
+            };
+
+            try {
+                console.log(`🔄 Fetching ${type}...`);
+                const response = await fetch(urls[type]);
+                const data = await response.json();
+                console.log(`✅ ${type} fetched:`, data);
+                
+                // Track custom metrics
+                currentInspector?.track(`fetch-${type}`, { 
+                    count: data.length,
+                    size: JSON.stringify(data).length 
+                });
+            } catch (error) {
+                console.error(`❌ Error fetching ${type}:`, error);
+            }
+        }
+
+        async function sendData() {
+            try {
+                console.log('📤 Sending POST data...');
+                const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        title: 'DevInspector Test',
+                        body: 'This is a test POST request from DevInspector demo',
+                        userId: 1,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+                const data = await response.json();
+                console.log('✅ POST successful:', data);
+            } catch (error) {
+                console.error('❌ POST failed:', error);
+            }
+        }
+
+        function simulateError() {
+            fetch('https://nonexistent-api-endpoint.invalid/data')
+                .catch(error => {
+                    console.error('🔴 Simulated network error:', error);
+                });
+        }
+
+        // Console Demo Functions
+        function logInfo() {
+            console.log('ℹ️ This is an info message');
+            console.info('📋 Detailed information about the current state');
+            console.log('🎯 Application is running smoothly at', new Date().toLocaleTimeString());
+        }
+
+        function logWarning() {
+            console.warn('⚠️ This is a warning message');
+            console.warn('🔶 Potential performance issue detected');
+            console.warn('📊 Memory usage is above recommended threshold');
+        }
+
+        function logError() {
+            console.error('🚨 This is an error message');
+            console.error('💥 Critical system failure');
+            console.error('🔥 Database connection failed');
+        }
+
+        function logObject() {
+            const complexObject = {
+                user: {
+                    id: 12345,
+                    name: 'John Doe',
+                    email: 'john@example.com',
+                    settings: {
+                        theme: 'dark',
+                        notifications: true,
+                        privacy: {
+                            shareData: false,
+                            analytics: true
+                        }
+                    }
+                },
+                session: {
+                    token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+                    expires: new Date(Date.now() + 3600000),
+                    permissions: ['read', 'write', 'admin']
+                },
+                metadata: new Map([
+                    ['created', new Date()],
+                    ['version', '1.2.3'],
+                    ['environment', 'production']
+                ])
+            };
+            
+            console.log('📦 Complex Object:', complexObject);
+            console.table(complexObject.user);
+        }
+
+        function groupedLogs() {
+            console.group('📂 User Authentication Process');
+            console.log('1️⃣ Validating credentials...');
+            console.log('2️⃣ Checking permissions...');
+            console.group('🔐 Security Checks');
+            console.log('🛡️ Two-factor authentication verified');
+            console.log('🔒 Session token generated');
+            console.groupEnd();
+            console.log('3️⃣ Loading user profile...');
+            console.log('✅ Authentication successful');
+            console.groupEnd();
+        }
+
+        // Performance Demo Functions
+        function memoryTest() {
+            console.log('🧠 Starting memory test...');
+            const largeArray = [];
+            for (let i = 0; i < 100000; i++) {
+                largeArray.push({
+                    id: i,
+                    data: new Array(100).fill(Math.random()),
+                    timestamp: new Date()
+                });
+            }
+            console.log(`📈 Created array with ${largeArray.length} objects`);
+            
+            setTimeout(() => {
+                largeArray.length = 0;
+                console.log('🗑️ Memory cleaned up');
+            }, 2000);
+        }
+
+        function heavyComputation() {
+            console.log('⚙️ Starting CPU intensive task...');
+            currentInspector?.markStart('heavy-computation');
+            
+            const start = performance.now();
+            let result = 0;
+            for (let i = 0; i < 10000000; i++) {
+                result += Math.sqrt(i) * Math.sin(i);
+            }
+            const end = performance.now();
+            
+            currentInspector?.markEnd('heavy-computation');
+            console.log(`🏁 Computation completed in ${(end - start).toFixed(2)}ms`);
+            console.log(`📊 Result: ${result.toFixed(2)}`);
+        }
+
+        function animationTest() {
+            console.log('🎬 Starting animation test...');
+            const div = document.createElement('div');
+            div.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                width: 100px;
+                height: 100px;
+                background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+                border-radius: 50%;
+                transform: translate(-50%, -50%);
+                z-index: 9999;
+                transition: all 0.3s ease;
+            `;
+            document.body.appendChild(div);
+            
+            let animationId;
+            let angle = 0;
+            
+            function animate() {
+                angle += 2;
+                div.style.transform = `translate(-50%, -50%) rotate(${angle}deg) scale(${1 + Math.sin(angle * 0.02) * 0.3})`;
+                animationId = requestAnimationFrame(animate);
+            }
+            
+            animate();
+            
+            setTimeout(() => {
+                cancelAnimationFrame(animationId);
+                document.body.removeChild(div);
+                console.log('🎬 Animation test completed');
+            }, 3000);
+        }
+
+        function domManipulation() {
+            console.log('🔧 Starting DOM manipulation test...');
+            const container = document.createElement('div');
+            container.style.cssText = 'position: fixed; top: -1000px; left: -1000px;';
+            document.body.appendChild(container);
+            
+            for (let i = 0; i < 1000; i++) {
+                const element = document.createElement('div');
+                element.textContent = `Element ${i}`;
+                element.className = `test-element-${i}`;
+                container.appendChild(element);
+            }
+            
+            console.log('➕ Created 1000 DOM elements');
+            
+            setTimeout(() => {
+                container.remove();
+                console.log('➖ Removed all test elements');
+                updateDOMCount();
+            }, 1000);
+        }
+
+        // Error Demo Functions
+        function throwError() {
+            throw new Error('🔴 This is a simulated error for testing purposes');
+        }
+
+        function promiseRejection() {
+            Promise.reject(new Error('🔴 Unhandled promise rejection'))
+                .catch(error => {
+                    console.error('Caught promise rejection:', error);
+                });
+        }
+
+        function typeError() {
+            try {
+                const obj = null;
+                obj.someProperty.nestedProperty = 'value';
+            } catch (error) {
+                console.error('🔤 Type Error caught:', error);
+            }
+        }
+
+        function referenceError() {
+            try {
+                console.log(undefinedVariable);
+            } catch (error) {
+                console.error('🔗 Reference Error caught:', error);
+            }
+        }
+
+        // Storage Demo Functions
+        function setLocalStorage() {
+            const data = {
+                userId: 12345,
+                preferences: {
+                    theme: 'dark',
+                    language: 'en',
+                    notifications: true
+                },
+                lastLogin: new Date().toISOString()
+            };
+            localStorage.setItem('devInspectorDemo', JSON.stringify(data));
+            console.log('💾 LocalStorage updated:', data);
+        }
+
+        function setSessionStorage() {
+            const sessionData = {
+                sessionId: 'sess_' + Math.random().toString(36).substr(2, 9),
+                startTime: new Date().toISOString(),
+                actions: ['login', 'navigate', 'interact']
+            };
+            sessionStorage.setItem('devInspectorSession', JSON.stringify(sessionData));
+            console.log('🔄 SessionStorage updated:', sessionData);
+        }
+
+        function setCookie() {
+            const cookieValue = `user_pref=${encodeURIComponent(JSON.stringify({
+                theme: 'auto',
+                layout: currentLayout,
+                timestamp: Date.now()
+            }))}; expires=${new Date(Date.now() + 86400000).toUTCString()}; path=/`;
+            document.cookie = cookieValue;
+            console.log('🍪 Cookie set:', cookieValue);
+        }
+
+        function clearStorage() {
+            localStorage.removeItem('devInspectorDemo');
+            sessionStorage.removeItem('devInspectorSession');
+            document.cookie = 'user_pref=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            console.log('🗑️ All storage cleared');
+        }
+
+        // Real-time Demo Functions
+        function startRealTimeUpdates() {
+            if (realtimeInterval) return;
+            
+            console.log('▶️ Starting real-time updates...');
+            const logElement = document.getElementById('realtime-log');
+            
+            realtimeInterval = setInterval(() => {
+                const timestamp = new Date().toLocaleTimeString();
+                const metrics = {
+                    cpu: Math.random() * 100,
+                    memory: Math.random() * 1000,
+                    requests: Math.floor(Math.random() * 50)
+                };
+                
+                const logEntry = document.createElement('div');
+                logEntry.innerHTML = `
+                    <span style="color: #4CAF50;">${timestamp}</span> - 
+                    CPU: ${metrics.cpu.toFixed(1)}%, 
+                    Memory: ${metrics.memory.toFixed(0)}MB, 
+                    Requests: ${metrics.requests}
+                `;
+                
+                logElement.appendChild(logEntry);
+                
+                // Keep only last 10 entries
+                while (logElement.children.length > 10) {
+                    logElement.removeChild(logElement.firstChild);
+                }
+                
+                logElement.scrollTop = logElement.scrollHeight;
+                
+                // Update metrics
+                document.getElementById('memory-usage').textContent = metrics.memory.toFixed(0);
+                
+                console.log('📊 Real-time metrics:', metrics);
+            }, 1000);
+        }
+
+        function stopRealTimeUpdates() {
+            if (realtimeInterval) {
+                clearInterval(realtimeInterval);
+                realtimeInterval = null;
+                console.log('⏹️ Real-time updates stopped');
+                
+                const logElement = document.getElementById('realtime-log');
+                const stopEntry = document.createElement('div');
+                stopEntry.innerHTML = '<span style="color: #f44336;">🔴 Updates stopped</span>';
+                logElement.appendChild(stopEntry);
+            }
+        }
+
+        function websocketTest() {
+            console.log('🔌 Testing WebSocket connection...');
+            
+            // Simulate WebSocket connection
+            const ws = {
+                readyState: 1,
+                send: (data) => console.log('📤 WebSocket send:', data),
+                close: () => console.log('🔌 WebSocket closed')
+            };
+            
+            setTimeout(() => {
+                ws.send(JSON.stringify({
+                    type: 'ping',
+                    timestamp: new Date().toISOString()
+                }));
+            }, 500);
+            
+            setTimeout(() => {
+                console.log('📥 WebSocket received:', {
+                    type: 'pong',
+                    timestamp: new Date().toISOString()
+                });
+            }, 1000);
+        }
+
+        // Utility Functions
+        function updateDOMCount() {
+            const count = document.querySelectorAll('*').length;
+            document.getElementById('dom-nodes').textContent = count;
+        }
+
+        function updateFPS() {
+            let lastTime = performance.now();
+            let frameCount = 0;
+            
+            function frame() {
+                frameCount++;
+                const currentTime = performance.now();
+                
+                if (currentTime >= lastTime + 1000) {
+                    document.getElementById('fps-counter').textContent = frameCount;
+                    frameCount = 0;
+                    lastTime = currentTime;
+                }
+                
+                requestAnimationFrame(frame);
+            }
+            
+            requestAnimationFrame(frame);
+        }
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 DevInspector Demo loaded!');
+            console.log('📋 Available keyboard shortcuts:');
+            console.log('   Ctrl+Shift+D - Toggle DevInspector');
+            console.log('   Ctrl+Shift+M - Minimize DevInspector');
+            
+            // Initialize inspector
+            initializeInspector();
+            
+            // Start FPS monitoring
+            updateFPS();
+            
+            // Update DOM count
+            updateDOMCount();
+            
+            // Initial memory reading
+            if (performance.memory) {
+                const memoryMB = (performance.memory.usedJSHeapSize / 1024 / 1024).toFixed(0);
+                document.getElementById('memory-usage').textContent = memoryMB;
+            }
+            
+            // Welcome messages
+            setTimeout(() => {
+                console.group('🎉 Welcome to DevInspector!');
+                console.log('🔍 DevInspector is now active and monitoring your application');
+                console.log('📊 Try the buttons above to see different features in action');
+                console.log('🎨 Switch between different layout modes using the controls');
+                console.groupEnd();
+            }, 1000);
+        });
+
+        // Cleanup when page unloads
+        window.addEventListener('beforeunload', function() {
+            if (realtimeInterval) {
+                clearInterval(realtimeInterval);
+            }
+            if (currentInspector) {
+                currentInspector.destroy();
+            }
+        });
+    </script>
+</body>
+</html>

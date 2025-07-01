@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevInspector - Production Demo</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      margin: 0;
+      padding: 40px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      min-height: 100vh;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    
+    .header h1 {
+      font-size: 3em;
+      margin: 0;
+      margin-bottom: 10px;
+    }
+    
+    .header p {
+      font-size: 1.2em;
+      opacity: 0.9;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 30px;
+    }
+    
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    
+    .card h2 {
+      margin-top: 0;
+      color: #fff;
+      font-size: 1.5em;
+    }
+    
+    .feature-list {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .feature-list li {
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .feature-list li:last-child {
+      border-bottom: none;
+    }
+    
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .stat {
+      text-align: center;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+    }
+    
+    .stat-value {
+      font-size: 2em;
+      font-weight: bold;
+      color: #4CAF50;
+    }
+    
+    .stat-label {
+      font-size: 0.9em;
+      opacity: 0.8;
+    }
+    
+    .cta {
+      text-align: center;
+      margin-top: 40px;
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 15px 30px;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      text-decoration: none;
+      border-radius: 10px;
+      margin: 0 10px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+    
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+    
+    .btn.primary {
+      background: #4CAF50;
+      border-color: #4CAF50;
+    }
+    
+    .btn.primary:hover {
+      background: #45a049;
+    }
+    
+    .notice {
+      background: rgba(76, 175, 80, 0.2);
+      border: 1px solid rgba(76, 175, 80, 0.5);
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 30px;
+      text-align: center;
+    }
+    
+    code {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: Monaco, monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🎉 DevInspector v1.0.0</h1>
+    <p>Production-Ready Developer Debugging Tool</p>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <h2>✨ Key Features</h2>
+      <ul class="feature-list">
+        <li>🌐 Network monitoring (fetch, XHR, WebSocket)</li>
+        <li>📝 Console enhancement with filtering</li>
+        <li>⚡ Performance monitoring (FPS, memory)</li>
+        <li>🐛 Error tracking with grouping</li>
+        <li>🎨 Professional UI with themes</li>
+        <li>🔌 Plugin architecture</li>
+        <li>📦 Zero dependencies</li>
+        <li>🚀 Framework agnostic</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>📊 Production Stats</h2>
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-value">2.0KB</div>
+          <div class="stat-label">Gzipped Size</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">0</div>
+          <div class="stat-label">Dependencies</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">95%+</div>
+          <div class="stat-label">Browser Support</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">&lt;1ms</div>
+          <div class="stat-label">Overhead</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🚀 Installation</h2>
+      <p><strong>NPM:</strong></p>
+      <code>npm install @oxog/devinspector</code>
+      
+      <p style="margin-top: 20px;"><strong>CDN:</strong></p>
+      <code style="font-size: 11px;">
+        &lt;script src="https://unpkg.com/@oxog/devinspector"&gt;&lt;/script&gt;
+      </code>
+      
+      <p style="margin-top: 20px;"><strong>Usage:</strong></p>
+      <code style="font-size: 11px; display: block; white-space: pre-wrap;">
+import DevInspector from '@oxog/devinspector';
+
+const inspector = new DevInspector({
+  enabled: true,
+  theme: 'dark'
+});
+
+inspector.show();</code>
+    </div>
+
+    <div class="card">
+      <h2>⚙️ Live Demo</h2>
+      <p>The DevInspector is already loaded on this page!</p>
+      <ul style="margin: 20px 0;">
+        <li>Look for the 🔍 widget in the corner</li>
+        <li>Click it to open the inspector</li>
+        <li>Use <code>Ctrl+Shift+D</code> to toggle</li>
+        <li>Drag the widget to reposition</li>
+      </ul>
+      <p style="font-size: 0.9em; opacity: 0.8;">
+        Try opening your browser's Network tab and refresh the page to see the minimal footprint!
+      </p>
+    </div>
+  </div>
+
+  <div class="notice">
+    <strong>🎯 Production Ready!</strong><br>
+    DevInspector is now built and ready for production use. 
+    The tool provides comprehensive debugging capabilities with minimal overhead.
+  </div>
+
+  <div class="cta">
+    <a href="https://github.com/ersinkoc/devinspector" class="btn primary">View on GitHub</a>
+    <a href="https://www.npmjs.com/package/@oxog/devinspector" class="btn">NPM Package</a>
+  </div>
+
+  <!-- Include DevInspector from the production build -->
+  <script src="../../dist/devinspector.umd.min.js"></script>
+  
+  <script>
+    // Initialize DevInspector
+    const inspector = new DevInspector.default({
+      enabled: true,
+      position: 'bottom-right',
+      theme: 'dark'
+    });
+
+    // Show inspector after a delay
+    setTimeout(() => {
+      inspector.show();
+      console.log('🎉 DevInspector v1.0.0 is production ready!');
+      console.log('Features: Network monitoring, Console enhancement, Performance tracking, Error handling');
+      console.log('Bundle size: Only 2.0KB gzipped | Zero dependencies | Framework agnostic');
+    }, 1500);
+
+    // Demonstrate tracking
+    inspector.track('page-load', {
+      url: window.location.href,
+      timestamp: Date.now(),
+      userAgent: navigator.userAgent
+    });
+
+    // Demonstrate performance marking
+    inspector.markStart('demo-operation');
+    setTimeout(() => {
+      inspector.markEnd('demo-operation');
+    }, 1000);
+
+    // Add some demo console logs
+    setTimeout(() => {
+      console.log('Demo: Network monitoring active');
+      console.info('Demo: Performance tracking enabled');
+      console.warn('Demo: Error handling ready');
+      
+      // Simulate some network activity
+      fetch('https://jsonplaceholder.typicode.com/posts/1')
+        .then(response => response.json())
+        .then(data => {
+          console.log('Demo API call successful:', data.title);
+        })
+        .catch(error => {
+          console.error('Demo API call failed:', error);
+        });
+    }, 3000);
+
+    // Show performance metrics
+    if ('memory' in performance) {
+      setInterval(() => {
+        const memory = performance.memory;
+        console.log(`Memory usage: ${Math.round(memory.usedJSHeapSize / 1024 / 1024)}MB`);
+      }, 5000);
+    }
+  </script>
+</body>
+</html>
