@@ -129,13 +129,13 @@ export class ConsoleMonitor {
 
   navigateHistory(direction: 'up' | 'down'): string | undefined {
     if (this.commandHistory.length === 0) return undefined;
-    
+
     if (direction === 'up') {
       this.historyIndex = Math.max(0, this.historyIndex - 1);
     } else {
-      this.historyIndex = Math.min(this.commandHistory.length - 1, this.historyIndex + 1);
+      this.historyIndex = Math.min(this.commandHistory.length, this.historyIndex + 1);
     }
-    
+
     return this.commandHistory[this.historyIndex];
   }
 

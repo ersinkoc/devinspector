@@ -154,12 +154,13 @@ export function deepClone<T>(obj: T): T {
 
 export function formatBytes(bytes: number, precision: number = 2): string {
   const units = ['B', 'KB', 'MB', 'GB', 'TB'];
-  
+
   if (bytes === 0) return '0 B';
-  
+  if (bytes < 0) return '0 B';
+
   const k = 1024;
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  
+
   return parseFloat((bytes / Math.pow(k, i)).toFixed(precision)) + ' ' + units[i];
 }
 
@@ -171,7 +172,7 @@ export function formatDuration(ms: number): string {
 }
 
 export function generateId(): string {
-  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
 }
 
 export function isCircularReference(obj: any, seen = new WeakSet()): boolean {
@@ -294,11 +295,11 @@ export function createWorkerScript(fn: (...args: any[]) => any): string {
         const result = await (${fn.toString()})(event.data);
         self.postMessage({ type: 'result', data: result });
       } catch (error) {
-        self.postMessage({ 
-          type: 'error', 
+        self.postMessage({
+          type: 'error',
           error: {
-            message: error.message,
-            stack: error.stack
+            message: error instanceof Error ? error.message : String(error),
+            stack: error instanceof Error ? error.stack : undefined
           }
         });
       }

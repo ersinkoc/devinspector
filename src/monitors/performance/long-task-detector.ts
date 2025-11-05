@@ -73,11 +73,11 @@ export class LongTaskDetector {
   private fallbackDetection(): void {
     // Fallback detection using requestAnimationFrame
     let lastTime = performance.now();
-    
+
     const check = () => {
       const currentTime = performance.now();
       const deltaTime = currentTime - lastTime;
-      
+
       if (deltaTime > this.threshold) {
         const task: LongTask = {
           id: `longtask-fallback-${++this.idCounter}`,
@@ -89,17 +89,17 @@ export class LongTaskDetector {
             containerType: 'window'
           }]
         };
-        
+
         this.callback(task);
       }
-      
+
       lastTime = currentTime;
-      
-      if (this.observer === null) {
+
+      if (this.observer !== null) {
         requestAnimationFrame(check);
       }
     };
-    
+
     requestAnimationFrame(check);
   }
 }
