@@ -65,16 +65,19 @@ export class FPSMonitor {
     // Update FPS calculation
     const timeSinceUpdate = currentTime - this.lastUpdateTime;
     if (timeSinceUpdate >= this.updateInterval) {
-      this.fps = (this.frameCount * 1000) / timeSinceUpdate;
-      const avgFrameTime = this.frameTimeSum / this.frameCount;
-      
-      this.callback({
-        fps: Math.round(this.fps),
-        timestamp: Date.now(),
-        frameTime: avgFrameTime,
-        droppedFrames: this.droppedFrames
-      });
-      
+      // Guard against division by zero
+      if (this.frameCount > 0) {
+        this.fps = (this.frameCount * 1000) / timeSinceUpdate;
+        const avgFrameTime = this.frameTimeSum / this.frameCount;
+
+        this.callback({
+          fps: Math.round(this.fps),
+          timestamp: Date.now(),
+          frameTime: avgFrameTime,
+          droppedFrames: this.droppedFrames
+        });
+      }
+
       // Reset counters
       this.frameCount = 0;
       this.frameTimeSum = 0;

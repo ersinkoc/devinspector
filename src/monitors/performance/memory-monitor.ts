@@ -60,10 +60,10 @@ export class MemoryMonitor {
 
   private measure(): void {
     if (!performance.memory) return;
-    
+
     const { usedJSHeapSize, totalJSHeapSize, jsHeapSizeLimit } = performance.memory;
-    const percentUsed = (usedJSHeapSize / jsHeapSizeLimit) * 100;
-    
+    const percentUsed = jsHeapSizeLimit > 0 ? (usedJSHeapSize / jsHeapSizeLimit) * 100 : 0;
+
     const data: MemoryData = {
       usedJSHeapSize,
       totalJSHeapSize,
@@ -71,21 +71,21 @@ export class MemoryMonitor {
       timestamp: Date.now(),
       percentUsed
     };
-    
+
     this.callback(data);
   }
 
   getCurrentMemory(): MemoryData | null {
     if (!this.isSupported || !performance.memory) return null;
-    
+
     const { usedJSHeapSize, totalJSHeapSize, jsHeapSizeLimit } = performance.memory;
-    
+
     return {
       usedJSHeapSize,
       totalJSHeapSize,
       jsHeapSizeLimit,
       timestamp: Date.now(),
-      percentUsed: (usedJSHeapSize / jsHeapSizeLimit) * 100
+      percentUsed: jsHeapSizeLimit > 0 ? (usedJSHeapSize / jsHeapSizeLimit) * 100 : 0
     };
   }
 

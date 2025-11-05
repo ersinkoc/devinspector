@@ -73,11 +73,13 @@ export class MetricsCollector {
     try {
       const lcpObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
-        const lastEntry = entries[entries.length - 1];
-        this.metrics.LCP = Math.round(lastEntry.startTime);
-        this.reportMetrics();
+        if (entries.length > 0) {
+          const lastEntry = entries[entries.length - 1];
+          this.metrics.LCP = Math.round(lastEntry.startTime);
+          this.reportMetrics();
+        }
       });
-      
+
       lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
     } catch (e) {
       console.warn('LCP not supported');
