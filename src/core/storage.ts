@@ -177,7 +177,11 @@ export class IndexedStorage<T> {
     };
 
     if (this.storage.has(key)) {
-      this.accessOrder = this.accessOrder.filter(k => k !== key);
+      // Optimize: use splice instead of filter to avoid creating new array
+      const index = this.accessOrder.indexOf(key);
+      if (index > -1) {
+        this.accessOrder.splice(index, 1);
+      }
     } else if (this.storage.size >= this.maxSize) {
       const evictKey = this.accessOrder.shift();
       if (evictKey) {
@@ -250,7 +254,11 @@ export class IndexedStorage<T> {
   }
 
   private updateAccessOrder(key: string): void {
-    this.accessOrder = this.accessOrder.filter(k => k !== key);
+    // Optimize: use splice instead of filter to avoid creating new array
+    const index = this.accessOrder.indexOf(key);
+    if (index > -1) {
+      this.accessOrder.splice(index, 1);
+    }
     this.accessOrder.push(key);
   }
 

@@ -39,10 +39,10 @@ describe('Utils', () => {
       expect(formatBytes(1024 * 1024)).toBe('1 MB');
     });
 
-    it('should handle negative bytes gracefully', () => {
-      // Bug fix: negative bytes should return '0 B' instead of 'NaN undefined'
-      expect(formatBytes(-100)).toBe('0 B');
-      expect(formatBytes(-1024)).toBe('0 B');
+    it('should throw error for negative bytes', () => {
+      // Bug fix: negative bytes should throw an error instead of returning misleading '0 B'
+      expect(() => formatBytes(-100)).toThrow('formatBytes: negative values not supported');
+      expect(() => formatBytes(-1024)).toThrow('formatBytes: negative values not supported');
     });
 
     it('should respect precision parameter', () => {

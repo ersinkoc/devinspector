@@ -189,7 +189,7 @@ export class DevInspector {
       this.events.emit('inspector:ready');
     } catch (error) {
       console.error('Failed to initialize DevInspector:', error);
-      this.config.onError(error as Error);
+      this.config.onError?.(error as Error);
     }
   }
 
@@ -324,7 +324,10 @@ export class DevInspector {
 
   show(): void {
     if (!this.initialized) {
-      this.init().then(() => this.show());
+      this.init().then(() => this.show()).catch(err => {
+        console.error('Failed to show inspector:', err);
+        this.config.onError?.(err);
+      });
       return;
     }
 
@@ -395,8 +398,8 @@ export class DevInspector {
     }
   }
 
-  use(plugin: any): void {
-    this.pluginSystem.register(plugin);
+  async use(plugin: any): Promise<void> {
+    await this.pluginSystem.register(plugin);
   }
 
   export(): any {

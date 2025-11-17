@@ -74,7 +74,7 @@ export class ConsoleMonitor {
     });
   }
 
-  executeCommand(command: string): void {
+  async executeCommand(command: string): Promise<void> {
     // Add to history
     this.commandHistory.push(command);
     this.historyIndex = this.commandHistory.length;
@@ -93,9 +93,13 @@ export class ConsoleMonitor {
     
     // Execute the command
     try {
-      // Create a function to evaluate the command in global scope
-      const result = (0, eval)(command);
-      
+      // SECURITY WARNING: Executing arbitrary code. This should only be used in development.
+      // Use Function constructor instead of eval for better security and scope control
+      // Note: This still allows code execution - ensure this feature is properly controlled
+      const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
+      const executionFn = new AsyncFunction('return (' + command + ')');
+      const result = await executionFn.call(window);
+
       if (result !== undefined) {
         const resultEntry: ConsoleEntry = {
           id: `result-${Date.now()}`,

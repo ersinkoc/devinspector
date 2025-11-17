@@ -25,8 +25,9 @@ export class EventEmitter<Events extends Record<string, any> = Record<string, an
     }
 
     const listeners = this.events.get(event)!;
-    
-    if (listeners.size >= this.maxListeners) {
+
+    // Warn when exceeding max listeners (not when equal to max)
+    if (listeners.size > this.maxListeners) {
       console.warn(
         `MaxListenersExceededWarning: Possible EventEmitter memory leak detected. ${listeners.size} ${String(event)} listeners added.`
       );

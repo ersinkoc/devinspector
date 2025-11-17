@@ -19,6 +19,7 @@ export class LongTaskDetector {
   private observer: PerformanceObserver | null = null;
   private threshold: number;
   private idCounter: number = 0;
+  private fallbackRunning: boolean = false;
 
   constructor(callback: LongTaskCallback, threshold: number = 50) {
     this.callback = callback;
@@ -47,6 +48,7 @@ export class LongTaskDetector {
   stop(): void {
     this.observer?.disconnect();
     this.observer = null;
+    this.fallbackRunning = false;
   }
 
   private handleLongTask(entry: PerformanceEntry): void {
@@ -72,6 +74,7 @@ export class LongTaskDetector {
 
   private fallbackDetection(): void {
     // Fallback detection using requestAnimationFrame
+    this.fallbackRunning = true;
     let lastTime = performance.now();
 
     const check = () => {
@@ -95,7 +98,7 @@ export class LongTaskDetector {
 
       lastTime = currentTime;
 
-      if (this.observer !== null) {
+      if (this.fallbackRunning) {
         requestAnimationFrame(check);
       }
     };

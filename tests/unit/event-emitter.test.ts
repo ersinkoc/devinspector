@@ -169,11 +169,13 @@ describe('EventEmitter', () => {
     it('should warn when exceeding max listeners', () => {
       const consoleWarn = jest.spyOn(console, 'warn').mockImplementation();
       const emitterWithLimit = new EventEmitter({ maxListeners: 2 });
-      
+
       emitterWithLimit.on('test', () => {});
       emitterWithLimit.on('test', () => {});
-      emitterWithLimit.on('test', () => {}); // This should trigger warning
-      
+      // Fixed: Now warns when exceeding (not at) max, so need to add 3rd listener
+      emitterWithLimit.on('test', () => {}); // At max (size=2)
+      emitterWithLimit.on('test', () => {}); // Exceeds max - should trigger warning
+
       expect(consoleWarn).toHaveBeenCalled();
       consoleWarn.mockRestore();
     });
