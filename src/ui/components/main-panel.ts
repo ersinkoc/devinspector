@@ -18,6 +18,7 @@ export class MainPanel {
   private isDragging = false;
   private dragOffset = { x: 0, y: 0 };
   private isResizing = false;
+  private badgeUpdateInterval: number | null = null;
 
   constructor(inspector: DevInspector) {
     this.inspector = inspector;
@@ -104,7 +105,7 @@ export class MainPanel {
     });
 
     // Update badge counts periodically
-    setInterval(() => this.updateBadges(), 1000);
+    this.badgeUpdateInterval = window.setInterval(() => this.updateBadges(), 1000);
   }
 
   private handleHeaderMouseDown(e: MouseEvent): void {
@@ -315,6 +316,12 @@ export class MainPanel {
   }
 
   destroy(): void {
+    // Clear badge update interval to prevent memory leak
+    if (this.badgeUpdateInterval !== null) {
+      clearInterval(this.badgeUpdateInterval);
+      this.badgeUpdateInterval = null;
+    }
+
     if (this.element.parentNode) {
       this.element.parentNode.removeChild(this.element);
     }

@@ -156,7 +156,7 @@ export function formatBytes(bytes: number, precision: number = 2): string {
   const units = ['B', 'KB', 'MB', 'GB', 'TB'];
 
   if (bytes === 0) return '0 B';
-  if (bytes < 0) return '0 B';
+  if (bytes < 0) throw new Error('formatBytes: negative values not supported');
 
   const k = 1024;
   const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -276,13 +276,16 @@ export function memoize<T extends (...args: any[]) => any>(
       cache.delete(key);
     }
 
+    // Evict oldest entry BEFORE adding if at capacity
+    if (cache.size >= maxSize) {
+      const firstKey = cache.keys().next().value;
+      if (firstKey !== undefined) {
+        cache.delete(firstKey);
+      }
+    }
+
     const result = fn(...args);
     cache.set(key, { value: result, timestamp: Date.now() });
-
-    if (cache.size > maxSize) {
-      const firstKey = cache.keys().next().value;
-      cache.delete(firstKey);
-    }
 
     return result;
   }) as T;

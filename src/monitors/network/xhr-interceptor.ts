@@ -232,11 +232,11 @@ export class XHRInterceptor {
         return xhr.response;
       }
       
-      if (xhr.responseType === 'arraybuffer') {
+      if (xhr.responseType === 'arraybuffer' && xhr.response) {
         return `[ArrayBuffer: ${xhr.response.byteLength} bytes]`;
       }
-      
-      if (xhr.responseType === 'blob') {
+
+      if (xhr.responseType === 'blob' && xhr.response) {
         return `[Blob: ${xhr.response.size} bytes, type: ${xhr.response.type}]`;
       }
       

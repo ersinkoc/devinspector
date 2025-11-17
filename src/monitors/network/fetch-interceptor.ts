@@ -67,7 +67,12 @@ export class FetchInterceptor {
         input.headers.forEach((value, key) => {
           headers[key] = value;
         });
-        body = await self.extractBody(input);
+        // Try to extract body, but handle cases where request is locked/used
+        try {
+          body = await self.extractBody(input);
+        } catch (e) {
+          body = '[Body unavailable - request already used]';
+        }
       } else {
         url = input.toString();
         method = init?.method || 'GET';

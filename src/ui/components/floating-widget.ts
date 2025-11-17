@@ -6,10 +6,18 @@ export class FloatingWidget {
   private isDragging = false;
   private dragOffset = { x: 0, y: 0 };
   private errorCount = 0;
+  private boundMouseMove: (e: MouseEvent) => void;
+  private boundMouseUp: (e: MouseEvent) => void;
+  private eventUnsubscribers: Array<() => void> = [];
 
   constructor(inspector: DevInspector) {
     this.inspector = inspector;
     this.element = this.createElement();
+
+    // Bind event handlers for proper cleanup later
+    this.boundMouseMove = this.handleMouseMove.bind(this);
+    this.boundMouseUp = this.handleMouseUp.bind(this);
+
     this.setupEventListeners();
     this.updatePosition();
   }
@@ -34,25 +42,28 @@ export class FloatingWidget {
 
     // Drag functionality
     this.element.addEventListener('mousedown', this.handleMouseDown.bind(this));
-    document.addEventListener('mousemove', this.handleMouseMove.bind(this));
-    document.addEventListener('mouseup', this.handleMouseUp.bind(this));
+    document.addEventListener('mousemove', this.boundMouseMove);
+    document.addEventListener('mouseup', this.boundMouseUp);
 
-    // Error tracking
-    this.inspector.on('error:caught', () => {
+    // Error tracking - store unsubscribe functions for cleanup
+    const unsubErrorCaught = this.inspector.on('error:caught', () => {
       this.errorCount++;
       this.updateAppearance();
     });
+    this.eventUnsubscribers.push(unsubErrorCaught);
 
-    this.inspector.on('error:uncaught', () => {
+    const unsubErrorUncaught = this.inspector.on('error:uncaught', () => {
       this.errorCount++;
       this.updateAppearance();
     });
+    this.eventUnsubscribers.push(unsubErrorUncaught);
 
     // Clear error count when inspector is opened
-    this.inspector.on('inspector:show', () => {
+    const unsubInspectorShow = this.inspector.on('inspector:show', () => {
       this.errorCount = 0;
       this.updateAppearance();
     });
+    this.eventUnsubscribers.push(unsubInspectorShow);
   }
 
   private handleMouseDown(e: MouseEvent): void {
@@ -117,9 +128,9 @@ export class FloatingWidget {
       bottom: windowHeight - centerY
     };
     
-    const closestEdge = Object.keys(distances).reduce((a, b) => 
-      distances[a] < distances[b] ? a : b
-    );
+    // Find closest edge using type-safe approach
+    const closestEdge = (Object.entries(distances) as [keyof typeof distances, number][])
+      .reduce((a, b) => a[1] < b[1] ? a : b)[0];
     
     // Animate to edge
     const margin = 20;
@@ -197,6 +208,14 @@ export class FloatingWidget {
   }
 
   destroy(): void {
+    // Remove document event listeners to prevent memory leaks
+    document.removeEventListener('mousemove', this.boundMouseMove);
+    document.removeEventListener('mouseup', this.boundMouseUp);
+
+    // Unsubscribe from all inspector events
+    this.eventUnsubscribers.forEach(unsubscribe => unsubscribe());
+    this.eventUnsubscribers = [];
+
     if (this.element.parentNode) {
       this.element.parentNode.removeChild(this.element);
     }
